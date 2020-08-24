@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MultipleEntryDetector {
     private static String SEPARATOR = ",";
-    private static String DATEFORMAT = "dd-M-yyyy hh:mm:ss";
+    private static String DATEFORMAT = "yyyy-MM-dd hh:mm:ss";
     private static Path PATH;
 
     private boolean SORTED;
@@ -149,10 +149,10 @@ public class MultipleEntryDetector {
 
             Map<String, List<String>> map = new HashMap<>();
             for (List<String> temp : list) {
-                if (before(temp.get(2), "2015-11-30 23:11:40")) {
+                if (before(temp.get(2), getDateBefore())) {
                     continue;
                 }
-                if (after(temp.get(2), "2015-11-30 23:17:48")) {
+                if (after(temp.get(2), getDateAfter())) {
                     break;
                 }
 
@@ -166,17 +166,13 @@ public class MultipleEntryDetector {
                     }
                 });
             }
+            System.out.println(map);
             map.values().removeIf(value -> value.size() == 2);
             return map;
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.<String, List<String>>emptyMap();
         }
-    }
-
-    @Test
-    private void TimeFilterTest() {
-        assertTrue(timeFilter("2015-11-30 23:11:40", "2015-11-30 22:11:40", "2015-11-30 23:40:40"));
     }
 
     /*If needed*/
@@ -207,7 +203,7 @@ public class MultipleEntryDetector {
             outerList.add(outList);
         });
 
-        File csvOutputFile = new File("output.csv");
+        File csvOutputFile = new File("output1hour.csv");
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
             outerList.forEach(pw::println);
         } catch (FileNotFoundException e) {
